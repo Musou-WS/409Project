@@ -3,11 +3,13 @@ from functools import partial
 from itertools import product
 
 import qrandom
+import qiskit # call the qiskit's module
+import json
 
 class self:
 	width = 50
 	gridNum = 10
-	bombNum = 10
+	trapNum = 10
 	block = []
 	grid = []
 
@@ -19,16 +21,16 @@ def create_panel(root):
 
 def create_grid():
 	self.grid = [[0 for j in range(self.gridNum)] for i in range(self.gridNum)]
-	set_bombs()
+	set_traps()
 
-def set_bombs():
-	bombCount = 0;
-	while bombCount < self.bombNum:
+def set_traps():
+	trapCount = 0;
+	while trapCount < self.trapNum:
 		coordTemp = get_random_coords()
-		# check if the coord already contains a bomb
+		# check if the coord already contains a trap
 		if self.grid[coordTemp[0]][coordTemp[1]] == 0:
 			self.grid[coordTemp[0]][coordTemp[1]] = 1
-			bombCount += 1
+			trapCount += 1
 
 def get_random_coords():
 	# use ANU to get quantum random numbers
@@ -45,6 +47,22 @@ def check(x, y):
 					self.block[i][j].configure(state=DISABLED, highlightbackground="red")
 				else:
 					self.block[i][j].configure(state=DISABLED)
+
+def get_hadmard():
+	qr = qiskit.QuantumRegister(1) # call a quantum bit (or qubit)
+	cr = qiskit.ClassicalRegister(1) # call a clasical bit
+	program = qiskit.QuantumCircuit(qr, cr) # The quantum circuit is generated from the previous qubit and bit
+	program.h(qr)
+
+	program.measure(qr,cr) # The qubit is measured and stored in the classic bit.
+
+	# %matplotlib inline
+	# program.draw(output="mpl")
+
+	job = qiskit.execute( program, qiskit.BasicAer.get_backend('qasm_simulator') )
+	num0 = job.result().get_counts()['0']
+	num1 = job.result().get_counts()['1']
+	return num0 < num1
 
 
 
