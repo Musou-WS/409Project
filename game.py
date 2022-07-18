@@ -12,6 +12,7 @@ class self:
 	trapNum = 10
 	block = []
 	grid = []
+	target = []
 
 def reinit():
 	self.width = 50
@@ -28,14 +29,19 @@ def create_panel(root):
 
 def create_grid():
 	self.grid = [[0 for j in range(self.gridNum)] for i in range(self.gridNum)]
+	set_target()
 	set_traps()
+
+def set_target():
+	self.target = get_random_coords()
+	self.block[self.target[0]][self.target[1]].configure(highlightbackground="pink")
 
 def set_traps():
 	trapCount = 0;
 	while trapCount < self.trapNum:
 		coordTemp = get_random_coords()
 		# check if the coord already contains a trap
-		if self.grid[coordTemp[0]][coordTemp[1]] == 0:
+		if self.grid[coordTemp[0]][coordTemp[1]] == 0 & (coordTemp[0] != self.target[0] | coordTemp[1] != self.target[1]):
 			self.grid[coordTemp[0]][coordTemp[1]] = 1
 			self.block[coordTemp[0]][coordTemp[1]].configure(highlightbackground="blue")
 			trapCount += 1
@@ -46,7 +52,10 @@ def get_random_coords():
 	return coordTemp
 
 def check(x, y):
-	if self.grid[x][y] == 1:
+	if x == (self.target[0]) & (y == self.target[1]):
+		print("target")
+		print(self.target)
+	elif self.grid[x][y] == 1:
 		if get_hadamard():
 			for i in range(self.gridNum):
 				for j in range(self.gridNum):
@@ -58,7 +67,8 @@ def check(x, y):
 		else:
 			self.block[x][y].configure(state=DISABLED, highlightbackground="green")
 			print ("survive")
-	elif self.grid[x][y] == 0:
+	else:
+		print(self.target)
 		sideTrapCount = 0
 		if get_not():
 			if y == 0:
