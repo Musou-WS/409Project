@@ -13,6 +13,13 @@ class self:
 	block = []
 	grid = []
 
+def reinit():
+	self.width = 50
+	self.gridNum = 10
+	self.trapNum = 10
+	self.block = []
+	self.grid = []
+
 def create_panel(root):
 	self.block = [[Button(root, command=partial(check, j, i)) for i in range(self.gridNum)] for j in range(self.gridNum)]
 	for i in range(self.gridNum):
@@ -30,6 +37,7 @@ def set_traps():
 		# check if the coord already contains a trap
 		if self.grid[coordTemp[0]][coordTemp[1]] == 0:
 			self.grid[coordTemp[0]][coordTemp[1]] = 1
+			self.block[coordTemp[0]][coordTemp[1]].configure(highlightbackground="blue")
 			trapCount += 1
 
 def get_random_coords():
@@ -50,6 +58,35 @@ def check(x, y):
 		else:
 			self.block[x][y].configure(state=DISABLED, highlightbackground="green")
 			print ("survive")
+	elif self.grid[x][y] == 0:
+		sideTrapCount = 0
+		if get_not():
+			if y == 0:
+				if x == 0:
+					sideTrapCount = self.grid[x+1][y] + self.grid[x][y+1] + self.grid[x+1][y+1]
+				elif x == self.gridNum-1:
+					sideTrapCount = self.grid[x-1][y] + self.grid[x-1][y+1] + self.grid[x][y+1]
+				else:
+					sideTrapCount = self.grid[x-1][y] + self.grid[x+1][y] + self.grid[x-1][y+1] + self.grid[x][y+1] + self.grid[x+1][y+1]
+			elif y == self.gridNum-1:
+				if x == 0:
+					sideTrapCount = self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x][y]
+				elif x == self.gridNum-1:
+					sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x-1][y]
+				else:
+					sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x-1][y] + self.grid[x+1][y]
+			elif x == 0:
+				sideTrapCount = self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x+1][y] + self.grid[x][y+1] + self.grid[x+1][y+1]
+			elif x == self.gridNum-1:
+				sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x-1][y] + self.grid[x-1][y+1] + self.grid[x][y+1]
+			else:
+				sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x-1][y] + self.grid[x+1][y] + self.grid[x-1][y+1] + self.grid[x][y+1] + self.grid[x+1][y+1]
+			self.block[x][y].configure(state=DISABLED, text = '%d' % sideTrapCount)
+		else:
+			self.block[x][y].configure(state=DISABLED, text = "null")
+			# sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x+1][y-1]
+			# 	+ self.grid[x-1][y] + self.grid[x][y]
+			# 	+ self.grid[x-1][y+1] + self.grid[x][y+1] + self.grid[x+1][y+1]
 
 def get_hadamard():
 	qr = qiskit.QuantumRegister(1) # call a quantum bit (or qubit)
