@@ -39,14 +39,17 @@ def get_random_coords():
 
 def check(x, y):
 	if self.grid[x][y] == 1:
-		print('yes')
-		for i in range(self.gridNum):
-			for j in range(self.gridNum):
-				if self.grid[i][j] == 1:
-					print(i, j)
-					self.block[i][j].configure(state=DISABLED, highlightbackground="red")
-				else:
-					self.block[i][j].configure(state=DISABLED)
+		if get_hadamard():
+			for i in range(self.gridNum):
+				for j in range(self.gridNum):
+					if self.grid[i][j] == 1:
+						print(i, j)
+						self.block[i][j].configure(state=DISABLED, highlightbackground="red")
+					else:
+						self.block[i][j].configure(state=DISABLED)
+		else:
+			self.block[x][y].configure(state=DISABLED, highlightbackground="green")
+			print ("survive")
 
 def get_hadamard():
 	qr = qiskit.QuantumRegister(1) # call a quantum bit (or qubit)
