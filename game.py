@@ -3,6 +3,7 @@ from functools import partial
 from itertools import product
 
 import qrandom
+import random
 import qiskit # call the qiskit's module
 import json
 
@@ -48,11 +49,11 @@ def set_traps():
 
 def get_random_coords():
 	# use ANU to get quantum random numbers
-	coordTemp = qrandom.sample(range(self.gridNum), 2)
+	coordTemp = random.sample(range(self.gridNum), 2)
 	return coordTemp
 
 def check(x, y):
-	if x == (self.target[0]) & (y == self.target[1]):
+	if (x == self.target[0]) & (y == self.target[1]):
 		print("target")
 		print(self.target)
 	elif self.grid[x][y] == 1:
