@@ -3,10 +3,12 @@ from functools import partial
 from itertools import product
 
 import game
+import credits
 
 class self:
 	frame = None
-	start = None
+	startBtn = None
+	creditsBtn = None
 
 def reinit():
 	clear()
@@ -18,10 +20,12 @@ def clear():
 			item.destroy()
 
 def create():
-	self.start = Button(self.frame, command=partial(show), text="start")
-	self.start.pack()
+	self.startBtn = Button(self.frame, command=partial(show, game), text="start")
+	self.startBtn.pack(expand='True')
+	self.creditsBtn = Button(self.frame, command=partial(show, credits), text="credits")
+	self.creditsBtn.pack(expand='True')
 
-def show():
-	game.reinit()
+def show(element):
+	element.reinit()
 	self.frame.pack_forget()
-	game.self.frame.pack(fill='both', expand='True')
+	element.self.frame.pack(fill='both', expand='True')
