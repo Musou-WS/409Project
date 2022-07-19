@@ -9,7 +9,7 @@ import json
 
 class self:
 	width = 50
-	gridNum = 10
+	gridNum = 8
 	trapNum = 10
 	block = []
 	grid = []
@@ -17,7 +17,7 @@ class self:
 
 def reinit():
 	self.width = 50
-	self.gridNum = 10
+	self.gridNum = 8
 	self.trapNum = 10
 	self.block = []
 	self.grid = []
@@ -40,7 +40,7 @@ def set_target():
 def set_traps():
 	trapCount = 0;
 	while trapCount < self.trapNum:
-		coordTemp = get_random_coords()
+		coordTemp = get_self_random_coords()
 		# check if the coord already contains a trap
 		if self.grid[coordTemp[0]][coordTemp[1]] == 0 & (coordTemp[0] != self.target[0] | coordTemp[1] != self.target[1]):
 			self.grid[coordTemp[0]][coordTemp[1]] = 1
@@ -51,6 +51,25 @@ def get_random_coords():
 	# use ANU to get quantum random numbers
 	coordTemp = random.sample(range(self.gridNum), 2)
 	return coordTemp
+
+def get_self_random_coords():
+	coordX = get_zero_or_one()*4 + get_zero_or_one()*2 + get_zero_or_one();
+	coordY = get_zero_or_one()*4 + get_zero_or_one()*2 + get_zero_or_one();
+
+	return [coordX, coordY]
+
+def get_zero_or_one():
+	qr = qiskit.QuantumRegister(1) # call a quantum bit (or qubit)
+	cr = qiskit.ClassicalRegister(1) # call a clasical bit
+	program = qiskit.QuantumCircuit(qr, cr) # The quantum circuit is generated from the previous qubit and bit
+	program.h(qr)
+
+	program.measure(qr,cr) # The qubit is measured and stored in the classic bit.
+
+	job = qiskit.execute( program, qiskit.BasicAer.get_backend('qasm_simulator') )
+	num0 = job.result().get_counts()['0']
+	num1 = job.result().get_counts()['1']
+	return num0 < num1
 
 def check(x, y):
 	if (x == self.target[0]) & (y == self.target[1]):
