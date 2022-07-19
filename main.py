@@ -4,6 +4,7 @@ from itertools import product
 
 import game
 import credits
+import help
 
 class self:
 	frame = None
@@ -22,7 +23,7 @@ def clear():
 			item.destroy()
 
 def create():
-	self.labelTitle = Label(self.frame, text="Game", font=("Arial", 20))
+	self.labelTitle = Label(self.frame, text="Find the Piggy hiding in Muds", font=("Arial", 20))
 	self.labelTitle.pack(side='top')
 	self.creditsBtn = Button(self.frame, command=partial(show, credits), text="credits")
 	self.creditsBtn.pack(side='bottom')

@@ -28,7 +28,6 @@ class self:
 	frame = None
 
 def reinit():
-	print("reinit")
 	clear()
 	create_panel()
 	create_grid()
