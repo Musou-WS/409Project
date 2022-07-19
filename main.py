@@ -7,7 +7,9 @@ import credits
 
 class self:
 	frame = None
+	title = None
 	startBtn = None
+	helpBtn = None
 	creditsBtn = None
 
 def reinit():
@@ -20,10 +22,14 @@ def clear():
 			item.destroy()
 
 def create():
-	self.startBtn = Button(self.frame, command=partial(show, game), text="start")
-	self.startBtn.pack(expand='True')
+	self.labelTitle = Label(self.frame, text="Game", font=("Arial", 20))
+	self.labelTitle.pack(side='top')
 	self.creditsBtn = Button(self.frame, command=partial(show, credits), text="credits")
-	self.creditsBtn.pack(expand='True')
+	self.creditsBtn.pack(side='bottom')
+	self.helpBtn = Button(self.frame, command=partial(show, help), text="help")
+	self.helpBtn.pack(side='bottom')
+	self.startBtn = Button(self.frame, command=partial(show, game), text="start")
+	self.startBtn.pack(side='bottom')
 
 def show(element):
 	element.reinit()

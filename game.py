@@ -189,7 +189,7 @@ def clear():
 def back():
 	main.reinit()
 	self.frame.pack_forget()
-	main.self.frame.pack(fill='both', expand='True')
+	main.self.frame.pack(expand='True')
 
 
 
