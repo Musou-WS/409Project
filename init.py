@@ -2,7 +2,9 @@ import game
 from tkinter import *
 
 root = Tk()
-root.geometry('400x400')
-game.create_panel(root)
+game.self.frame = Frame(root)
+root.geometry('400x430')
+game.create_panel()
 game.create_grid()
+game.self.frame.pack()
 root.mainloop()
