@@ -1,6 +1,8 @@
 from tkinter import *
+from tkmacosx import Button
 from functools import partial
 from itertools import product
+from PIL import Image, ImageTk
 
 import qrandom
 import random
@@ -14,16 +16,32 @@ class self:
 	block = []
 	grid = []
 	target = []
+	# init images
+	mud = None
+	pig = None
+	holeGreen = None
+	holeRed = None
 
 def reinit():
-	self.width = 50
-	self.gridNum = 8
-	self.trapNum = 10
 	self.block = []
 	self.grid = []
 
 def create_panel(root):
-	self.block = [[Button(root, command=partial(check, j, i)) for i in range(self.gridNum)] for j in range(self.gridNum)]
+	# init images
+	mudImg = Image.open("img/mud.png")
+	mudImgResize = mudImg.resize((44, 44))
+	self.mud = ImageTk.PhotoImage(mudImgResize)
+	pigImg = Image.open("img/pig.png")
+	pigImgResize = pigImg.resize((44, 44))
+	self.pig = ImageTk.PhotoImage(pigImgResize)
+	holeGreenImg = Image.open("img/holeGreen.png")
+	holeGreenImgResize = holeGreenImg.resize((44, 22))
+	self.holeGreen = ImageTk.PhotoImage(holeGreenImgResize)
+	holeRedImg = Image.open("img/holeRed.png")
+	holeRedImgResize = holeRedImg.resize((44, 22))
+	self.holeRed = ImageTk.PhotoImage(holeRedImgResize)
+
+	self.block = [[Button(root, command=partial(check, j, i), image=self.mud, compound="center", bg="black", disabledforeground="black") for i in range(self.gridNum)] for j in range(self.gridNum)]
 	for i in range(self.gridNum):
 		for j in range(self.gridNum):
 			self.block[i][j].place(x=i*self.width, y=j*self.width, width=self.width, height=self.width)
@@ -35,7 +53,7 @@ def create_grid():
 
 def set_target():
 	self.target = get_random_coords()
-	self.block[self.target[0]][self.target[1]].configure(highlightbackground="pink")
+	self.block[self.target[0]][self.target[1]].configure(highlightbackground="green")
 
 def set_traps():
 	trapCount = 0;
@@ -73,20 +91,24 @@ def get_zero_or_one():
 
 def check(x, y):
 	if (x == self.target[0]) & (y == self.target[1]):
-		print("target")
-		print(self.target)
+		for i in range(self.gridNum):
+			for j in range(self.gridNum):
+				if self.grid[i][j] == 1:
+					self.block[i][j].configure(state=DISABLED, image=self.holeGreen)
+				else:
+					self.block[i][j].configure(state=DISABLED)
+		self.block[x][y].configure(image=self.pig)
 	elif self.grid[x][y] == 1:
 		if get_hadamard():
 			for i in range(self.gridNum):
 				for j in range(self.gridNum):
 					if self.grid[i][j] == 1:
 						print(i, j)
-						self.block[i][j].configure(state=DISABLED, highlightbackground="red")
+						self.block[i][j].configure(state=DISABLED, image=self.holeRed)
 					else:
 						self.block[i][j].configure(state=DISABLED)
 		else:
-			self.block[x][y].configure(state=DISABLED, highlightbackground="green")
-			print ("survive")
+			self.block[x][y].configure(state=DISABLED, image=self.holeGreen)
 	else:
 		print(self.target)
 		sideTrapCount = 0
