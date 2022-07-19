@@ -8,6 +8,7 @@ import qrandom
 import random
 import qiskit # call the qiskit's module
 import json
+import main
 
 class self:
 	width = 50
@@ -17,6 +18,7 @@ class self:
 	grid = []
 	target = []
 	restart = None
+	back = None
 	# init images
 	mud = None
 	pig = None
@@ -54,6 +56,8 @@ def create_panel():
 	# restart button
 	self.restart = Button(self.frame, command=partial(reinit), text="restart")
 	self.restart.place(x=330, y=405, width=50, height=25)
+	self.back = Button(self.frame, command=partial(back), text="back")
+	self.back.place(x=20, y=405, width=50, height=25)
 
 def create_grid():
 	self.grid = [[0 for j in range(self.gridNum)] for i in range(self.gridNum)]
@@ -115,6 +119,7 @@ def check(x, y):
 						self.block[i][j].configure(state=DISABLED, image=self.holeRed)
 					else:
 						self.block[i][j].configure(state=DISABLED)
+			self.block[self.target[0]][self.target[1]].configure(image=self.pig)
 		else:
 			self.block[x][y].configure(state=DISABLED, image=self.holeGreen)
 	else:
@@ -177,20 +182,14 @@ def get_not():
 	return num0 < num1
 
 def clear():
-	for item in self.frame.winfo_children():
-		item.destroy()
+	if self.frame != None:
+		for item in self.frame.winfo_children():
+			item.destroy()
 
-# def showFrame():
-# 	self.frame.pack()
-root = Tk()
-root.geometry('400x430')
-root.title('P')
-self.frame = Frame(root, bg='white')
-self.frame.pack_propagate(0)
-self.frame.pack(fill='both', expand='True')
-create_panel()
-create_grid()
-root.mainloop()
+def back():
+	main.reinit()
+	self.frame.pack_forget()
+	main.self.frame.pack(fill='both', expand='True')
 
 
 
