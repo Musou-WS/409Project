@@ -19,6 +19,8 @@ class self:
 	target = []
 	restart = None
 	back = None
+	skillBtn = None
+	skillLabel = None
 	# init images
 	mud = None
 	pig = None
@@ -26,9 +28,17 @@ class self:
 	holeRed = None
 	# frame
 	frame = None
+	# skill
+	skill = False
+	skillCount = 3
+	coordControl = None
+	colors=["red", "green", "blue", "pink", "black", "purple"]
 
 def reinit():
 	clear()
+	self.skill = False
+	self.skillCount = 3
+	self.coordControl = None
 	create_panel()
 	create_grid()
 
@@ -53,10 +63,15 @@ def create_panel():
 			self.block[i][j].place(x=i*self.width, y=j*self.width, width=self.width, height=self.width)
 
 	# restart button
-	self.restart = Button(self.frame, command=partial(reinit), text="restart")
+	self.restart = Button(self.frame, command=partial(reinit), text="Restart")
 	self.restart.place(x=330, y=405, width=50, height=25)
-	self.back = Button(self.frame, command=partial(back), text="back")
+	self.back = Button(self.frame, command=partial(back), text="Back")
 	self.back.place(x=20, y=405, width=50, height=25)
+	# skill
+	self.skillBtn = Button(self.frame, command=partial(skill), text="Spell")
+	self.skillBtn.place(x=150, y=405, width=50, height=25)
+	self.skillLabel = Label(self.frame, text=self.skillCount, font=("Arial", 20))
+	self.skillLabel.place(x=200, y=405, width=50, height=25)
 
 def create_grid():
 	self.grid = [[0 for j in range(self.gridNum)] for i in range(self.gridNum)]
@@ -102,7 +117,22 @@ def get_zero_or_one():
 	return num0 < num1
 
 def check(x, y):
-	if (x == self.target[0]) & (y == self.target[1]):
+	if self.skill:
+		if self.coordControl is None:
+			self.coordControl = [x, y]
+			self.block[x][y].configure(highlightbackground=self.colors[3-self.skillCount])
+		else:
+			result = cnot(self.grid[self.coordControl[0]][self.coordControl[1]], self.grid[x][y])
+			if result:
+				self.block[x][y].configure(highlightbackground=self.colors[3-self.skillCount])
+			else:
+				self.block[x][y].configure(highlightbackground=self.colors[6-self.skillCount])
+			self.coordControl = None
+			self.skill = False
+			self.skillCount -= 1
+			self.skillBtn.configure(text="skill")
+			self.skillLabel.configure(text=self.skillCount)
+	elif (x == self.target[0]) & (y == self.target[1]):
 		for i in range(self.gridNum):
 			for j in range(self.gridNum):
 				if self.grid[i][j] == 1:
@@ -151,6 +181,17 @@ def check(x, y):
 			# 	+ self.grid[x-1][y] + self.grid[x][y]
 			# 	+ self.grid[x-1][y+1] + self.grid[x][y+1] + self.grid[x+1][y+1]
 
+def skill():
+	if self.skill:
+		self.skill = False
+		if self.coordControl is not None:
+			self.block[self.coordControl[0]][self.coordControl[1]].configure(highlightbackground="#f0f0f0")
+			self.coordControl = None
+		self.skillBtn.configure(text="Skill")
+	else:
+		self.skill = True
+		self.skillBtn.configure(text="Cancel")
+
 def get_hadamard():
 	qr = qiskit.QuantumRegister(1) # call a quantum bit (or qubit)
 	cr = qiskit.ClassicalRegister(1) # call a clasical bit
@@ -178,6 +219,29 @@ def get_not():
 	job = qiskit.execute( program, qiskit.BasicAer.get_backend('qasm_simulator') )
 	num0 = job.result().get_counts()['0']
 	num1 = job.result().get_counts()['1']
+	return num0 < num1
+
+def cnot(q0, q1):
+	qr = qiskit.QuantumRegister(2) # call a quantum bit (or qubit)
+	cr = qiskit.ClassicalRegister(1) # call a clasical bit
+	program = qiskit.QuantumCircuit(qr, cr) # The quantum circuit is generated from the previous qubit and bit
+	if q0 == 1:
+		program.x(qr[0])
+	if q1 == 1:
+		program.x(qr[0])
+	program.cx(qr[0], qr[1])
+	program.x(qr[1])
+	program.measure(qr[1], cr)
+	job = qiskit.execute( program, qiskit.BasicAer.get_backend('qasm_simulator') )
+	# if job.result().get_counts()['0'] == Null:
+	try:
+		num0 = job.result().get_counts()['0']
+	except:
+		num0 = 0
+	try:
+		num1 = job.result().get_counts()['1']
+	except:
+		num1 = 0
 	return num0 < num1
 
 def clear():

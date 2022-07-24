@@ -23,7 +23,7 @@ def clear():
 def create():
 	self.labelTitle = Label(self.frame, text="CREDITS", font=("Arial", 20))
 	self.labelTitle.pack(expand="True")
-	self.labelName = Label(self.frame, text="Weilong Xu\nHaojie Huang\nJianan Xu\nWeixiang Kong\nYujia Liu")
+	self.labelName = Label(self.frame, text="Woo Hoo 2")
 	self.labelName.pack(expand="True")
 	self.backBtn = Button(self.frame, command=partial(back), text="back")
 	self.backBtn.place(x=20, y=405, width=50, height=25)
