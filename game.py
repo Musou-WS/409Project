@@ -130,6 +130,8 @@ def check(x, y):
 			self.coordControl = None
 			self.skill = False
 			self.skillCount -= 1
+			if self.skillCount <= 0:
+				self.skillBtn.configure(state=DISABLED)
 			self.skillBtn.configure(text="skill")
 			self.skillLabel.configure(text=self.skillCount)
 	elif (x == self.target[0]) & (y == self.target[1]):
@@ -153,27 +155,27 @@ def check(x, y):
 			self.block[x][y].configure(state=DISABLED, image=self.holeGreen)
 	else:
 		sideTrapCount = 0
-		if get_not():
-			if y == 0:
-				if x == 0:
-					sideTrapCount = self.grid[x+1][y] + self.grid[x][y+1] + self.grid[x+1][y+1]
-				elif x == self.gridNum-1:
-					sideTrapCount = self.grid[x-1][y] + self.grid[x-1][y+1] + self.grid[x][y+1]
-				else:
-					sideTrapCount = self.grid[x-1][y] + self.grid[x+1][y] + self.grid[x-1][y+1] + self.grid[x][y+1] + self.grid[x+1][y+1]
-			elif y == self.gridNum-1:
-				if x == 0:
-					sideTrapCount = self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x+1][y]
-				elif x == self.gridNum-1:
-					sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x-1][y]
-				else:
-					sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x-1][y] + self.grid[x+1][y]
-			elif x == 0:
-				sideTrapCount = self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x+1][y] + self.grid[x][y+1] + self.grid[x+1][y+1]
+		if y == 0:
+			if x == 0:
+				sideTrapCount = self.grid[x+1][y] + self.grid[x][y+1] + self.grid[x+1][y+1]
 			elif x == self.gridNum-1:
-				sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x-1][y] + self.grid[x-1][y+1] + self.grid[x][y+1]
+				sideTrapCount = self.grid[x-1][y] + self.grid[x-1][y+1] + self.grid[x][y+1]
 			else:
-				sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x-1][y] + self.grid[x+1][y] + self.grid[x-1][y+1] + self.grid[x][y+1] + self.grid[x+1][y+1]
+				sideTrapCount = self.grid[x-1][y] + self.grid[x+1][y] + self.grid[x-1][y+1] + self.grid[x][y+1] + self.grid[x+1][y+1]
+		elif y == self.gridNum-1:
+			if x == 0:
+				sideTrapCount = self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x+1][y]
+			elif x == self.gridNum-1:
+				sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x-1][y]
+			else:
+				sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x-1][y] + self.grid[x+1][y]
+		elif x == 0:
+			sideTrapCount = self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x+1][y] + self.grid[x][y+1] + self.grid[x+1][y+1]
+		elif x == self.gridNum-1:
+			sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x-1][y] + self.grid[x-1][y+1] + self.grid[x][y+1]
+		else:
+			sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x-1][y] + self.grid[x+1][y] + self.grid[x-1][y+1] + self.grid[x][y+1] + self.grid[x+1][y+1]
+		if get_not():
 			self.block[x][y].configure(state=DISABLED, text = '%d' % sideTrapCount)
 		else:
 			self.block[x][y].configure(state=DISABLED, text = "?")
