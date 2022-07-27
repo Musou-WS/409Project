@@ -143,6 +143,7 @@ def check(x, y):
 					self.block[i][j].configure(state=DISABLED)
 		self.block[x][y].configure(image=self.pig)
 	elif self.grid[x][y] == 1:
+		#点到炸弹 用hadamard判断是否去世
 		if get_hadamard():
 			for i in range(self.gridNum):
 				for j in range(self.gridNum):
@@ -175,6 +176,7 @@ def check(x, y):
 			sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x-1][y] + self.grid[x-1][y+1] + self.grid[x][y+1]
 		else:
 			sideTrapCount = self.grid[x-1][y-1] + self.grid[x][y-1] + self.grid[x+1][y-1] + self.grid[x-1][y] + self.grid[x+1][y] + self.grid[x-1][y+1] + self.grid[x][y+1] + self.grid[x+1][y+1]
+		#为了增加游戏难度 特地不告诉你旁边的炸弹数量
 		if get_not():
 			self.block[x][y].configure(state=DISABLED, text = '%d' % sideTrapCount)
 		else:
@@ -218,9 +220,9 @@ def get_not():
 
 	program.measure(qr, cr)
 
-	job = qiskit.execute( program, qiskit.BasicAer.get_backend('qasm_simulator') )
-	num0 = job.result().get_counts()['0']
-	num1 = job.result().get_counts()['1']
+	job = qiskit.execute(program, qiskit.BasicAer.get_backend('qasm_simulator'))
+	num0 = job.result().get_counts()['0'] * 0.49
+	num1 = job.result().get_counts()['1'] * 0.51
 	return num0 < num1
 
 def cnot(q0, q1):
