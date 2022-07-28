@@ -7,3 +7,10 @@
 
 ## Run the program
 python3 init.py
+
+## Reference
+### Ideas
+Catsweeper (https://github.com/desireevl/quantum-catsweeper)
+Minesweeper
+### Icons (https://www.iconfont.cn)
+
